@@ -11,7 +11,7 @@ function App() {
         </h1>
 
         <p className="login-description">
-          Sign in to access the Cyber Range.
+          Practice cybersecurity skills in a controlled environment.
         </p>
 
         <button className="oidc-button" type="button">
