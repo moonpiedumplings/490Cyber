@@ -12,6 +12,23 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 
+# </Josiah 11/8/26
+import os
+
+AUTHLIB_OAUTH_CLIENTS = {
+    "oidc": {
+        "client_id": os.environ["OIDC_CLIENT_ID"],
+        "client_secret": os.environ["OIDC_CLIENT_SECRET"],
+    }
+}
+OIDC_ISSUER = os.environ["OIDC_ISSUER"]        # e.g. https://login.example.com
+LOGIN_URL = "/login/"
+SESSION_COOKIE_SECURE = False                  # IMPORTANT: false for dev. Using http//localhost... means this has to be false. When moving to production, "Real" sites use https. Change this to true in Prduction
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"                # required so the callback sees the session
+# /Josiah 11/8/26>
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

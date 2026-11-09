@@ -6,8 +6,12 @@ services:
       - ./backend:/app
     ports:
       - "8000:8000"
+    environment:
+      - OIDC_CLIENT_ID=your-client-id
+      - OIDC_CLIENT_SECRET=your-client-secret
+      - OIDC_ISSUER=http://mock-oidc:8080
     command: >-
-      sh -c "pip install --no-cache-dir 'Django>=6.1,<6.2' &&
+      sh -c "pip install --no-cache-dir 'Django>=6.1,<6.2' authlib requests &&
       python manage.py runserver 0.0.0.0:8000"
 
   frontend:

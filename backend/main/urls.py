@@ -17,6 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+#</Josiah 11/8/26
+from . import views
+#/Josiah 11/8/26>
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # </Josiah 11/8/26
+    path("", views.home, name="home"),
+    path("login/", views.login_view, name="oidc_login"),
+    path("oidc/callback/", views.callback, name="oidc_callback"),
+    path("logout/", views.logout_view, name="logout"),
+    # /Josiah 11/8/26>
 ]
