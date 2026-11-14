@@ -7,11 +7,12 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - OIDC_CLIENT_ID=your-client-id
-      - OIDC_CLIENT_SECRET=your-client-secret
-      - OIDC_ISSUER=http://mock-oidc:8080
+      - OIDC_CLIENT_ID=Mock-ID
+      - OIDC_CLIENT_SECRET=Mock-Secret
+      - OIDC_ISSUER=http://mock-oidc:8080/default
     command: >-
-      sh -c "pip install --no-cache-dir 'Django>=6.1,<6.2' authlib requests &&
+      sh -c "pip install --no-cache-dir 'Django>=6.1,<6.2' authlib requests psycopg[binary] &&
+      python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000"
 
   frontend:

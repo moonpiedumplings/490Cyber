@@ -25,8 +25,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # </Josiah 11/8/26
     path("", views.home, name="home"),
+
     path("login/", views.login_view, name="oidc_login"),
+    # path("login/<str:provider>/", views.login_view, name="oidc_login"),
     path("oidc/callback/", views.callback, name="oidc_callback"),
+    # path("callback/<str:provider>/", views.callback, name="oidc_callback"),
+
     path("logout/", views.logout_view, name="logout"),
     # /Josiah 11/8/26>
 ]

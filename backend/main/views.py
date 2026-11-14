@@ -13,10 +13,26 @@ oauth.register(
     server_metadata_url=f"{settings.OIDC_ISSUER}/.well-known/openid-configuration",
     client_kwargs={"scope": "openid email profile", "code_challenge_method": "S256"},
 )
+# oauth.register(
+#     name="google",
+#     server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+#     client_kwargs={"scope": "openid email profile"},
+# )
+
 
 def login_view(request):
     redirect_uri = request.build_absolute_uri(reverse("oidc_callback"))
     return oauth.oidc.authorize_redirect(request, redirect_uri)
+
+# def login_view(request, provider):
+#     client = oauth.create_client(provider)
+#     if not client:
+#         raise Http404("Provider not found")
+        
+#     redirect_uri = request.build_absolute_uri(
+#         reverse("oidc_callback", kwargs={"provider": provider})
+#     )
+#     return client.authorize_redirect(request, redirect_uri)
 
 def callback(request):
     try:
@@ -29,6 +45,23 @@ def callback(request):
         username=f"oidc:{claims['sub']}", defaults={"email": claims.get("email", "")})
     login(request, user)                                      # rotates the session key
     return redirect("home")
+
+# def callback(request, provider):
+#     client = oauth.create_client(provider)
+#     if not client:
+#         raise Http404("Provider not found")
+#     try:
+#         token = client.authorize_access_token(request)
+#     except Exception as exc:
+#         return HttpResponseBadRequest(f"Login failed: {type(exc).__name__}")
+#     claims = token.get("userinfo")
+#     User = get_user_model()
+#     user, _ = User.objects.get_or_create(
+#         username=f"{provider}:{claims['sub']}", 
+#         defaults={"email": claims.get("email", "")}
+#     )
+#     login(request, user)
+#     return redirect("home")
 
 def logout_view(request):
     logout(request)
