@@ -1,0 +1,5 @@
+when moving away from mock OIDC to authentik and others:
+    - settings.py
+        - set SESSION_COOKIE_SECURE = True
+    - docker-compose.yaml
+        - set services/backend/environment variables
