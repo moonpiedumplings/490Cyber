@@ -44,7 +44,7 @@ def callback(request):
     user, _ = User.objects.get_or_create(
         username=f"oidc:{claims['sub']}", defaults={"email": claims.get("email", "")})
     login(request, user)                                      # rotates the session key
-    return redirect("home")
+    return redirect("http://localhost:5173/#/range")
 
 # def callback(request, provider):
 #     client = oauth.create_client(provider)
