@@ -12,6 +12,23 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 
+# </Josiah 11/8/26
+import os
+
+AUTHLIB_OAUTH_CLIENTS = {
+    "oidc": {
+        "client_id": os.environ.get("OIDC_CLIENT_ID", "default-client-id"),
+        "client_secret": os.environ.get("OIDC_CLIENT_SECRET", "default-secret"),
+    }
+}
+OIDC_ISSUER = os.environ.get("OIDC_ISSUER")        # e.g. https://login.example.com
+LOGIN_URL = "/login/"
+SESSION_COOKIE_SECURE = False                  # IMPORTANT: false for dev. Using http//localhost... means this has to be false. When moving to production, "Real" sites use https. Change this to true in Prduction
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"                # required so the callback sees the session
+# /Josiah 11/8/26>
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -74,8 +91,12 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'app'),
+        'USER': os.getenv('POSTGRES_USER', 'app'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'app'),
+        'HOST': os.getenv('POSTGRES_HOST', 'postgres'), # 'postgres' if inside Docker, 'localhost' if running outside Docker
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 

@@ -1,121 +1,67 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
+import AppShell from './components/AppShell'
+import MatrixRain from './components/MatrixRain'
+import { getCurrentUser, saveProfile } from './lib/currentUser'
+import { ROUTES, useHashRoute } from './lib/router'
+import SettingsProvider from './lib/SettingsProvider'
+import MainPage from './pages/MainPage'
+import ProfilePage from './pages/ProfilePage'
 
-function App() {
-  const [count, setCount] = useState(0)
+function LoginPage() {
+  const handleLogin = () => {
+    // Navigate the browser to Django's login route
+    window.location.href = 'http://localhost:8000/login/'
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+    <main className="login-page">
+      <MatrixRain />
+
+      <section className="login-content" aria-labelledby="login-title">
+        <div className="brand-accent" aria-hidden="true"></div>
+
+        <h1 className="login-title" id="login-title">
+          CYBER <span>RANGE</span>
+        </h1>
+
+        <p className="login-description">
+          Practice cybersecurity skills in a controlled environment.
+        </p>
+
+        <button className="oidc-button" type="button" onClick={handleLogin}>
+          Sign in with OpenID Connect
         </button>
       </section>
+    </main>
+  )
+}
 
-      <div className="ticks"></div>
+// Routes (hash-based for now):
+//   #/         login
+//   #/range    main dashboard
+//   #/profile  profile page
+function App() {
+  const path = useHashRoute()
+  const [user, setUser] = useState(getCurrentUser)
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  if (path !== ROUTES.range && path !== ROUTES.profile) {
+    return <LoginPage />
+  }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+  return (
+    <SettingsProvider>
+      <AppShell user={user} activePath={path}>
+        {path === ROUTES.profile ? (
+          <ProfilePage
+            user={user}
+            onUpdateProfile={(changes) => setUser(saveProfile(changes))}
+          />
+        ) : (
+          <MainPage user={user} />
+        )}
+      </AppShell>
+    </SettingsProvider>
   )
 }
 
