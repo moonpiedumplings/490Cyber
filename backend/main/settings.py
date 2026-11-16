@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 
-# </Josiah 11/8/26
 import os
 
 AUTHLIB_OAUTH_CLIENTS = {
@@ -26,7 +25,6 @@ LOGIN_URL = "/login/"
 SESSION_COOKIE_SECURE = False                  # IMPORTANT: false for dev. Using http//localhost... means this has to be false. When moving to production, "Real" sites use https. Change this to true in Prduction
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"                # required so the callback sees the session
-# /Josiah 11/8/26>
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,7 +40,7 @@ SECRET_KEY = 'django-insecure-(-%_p24a_dj14-c0@26ykv!*(n$u1z2u917tos!re=of&mdsa@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
 
 
 # Application definition

@@ -5,7 +5,7 @@ import './ProfilePage.css'
 
 // SCRUM-105: profile page opened from the avatar button in the top bar.
 // Data comes from the placeholder user in lib/currentUser.js for now.
-export default function ProfilePage({ user, onUpdateProfile }) {
+export default function ProfilePage({ user, onUpdateProfile, onLogout }) {
   const [editingName, setEditingName] = useState(false)
   const [nameDraft, setNameDraft] = useState(user.displayName)
 
@@ -112,9 +112,9 @@ export default function ProfilePage({ user, onUpdateProfile }) {
         </div>
 
         <div className="profile-footer">
-          <a className="btn btn-danger" href={LOGOUT_URL}>
+          <button type="button" className="btn btn-danger" onClick={onLogout}>
             Sign out
-          </a>
+          </button>
         </div>
       </section>
     </div>

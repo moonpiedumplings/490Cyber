@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import AppShell from './components/AppShell'
 import { getCurrentUser, saveProfile } from './lib/currentUser'
-import { ROUTES, useHashRoute } from './lib/router'
+import { ROUTES, navigate, useHashRoute } from './lib/router'
 import SettingsProvider from './lib/SettingsProvider'
 import MainPage from './pages/MainPage'
 import ProfilePage from './pages/ProfilePage'
@@ -41,6 +41,41 @@ function LoginPage() {
 function App() {
   const path = useHashRoute()
   const [user, setUser] = useState(getCurrentUser)
+  const [loading, setLoading] = useState(true)
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/logout/', { credentials: 'include' })
+    } finally {
+      setUser(null)
+      navigate(ROUTES.login)
+    }
+  }
+
+  useEffect(() => {
+    fetch('/api/me/', { credentials: 'include' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated) {
+          setUser(data)
+          if (window.location.hash === '' || window.location.hash === '#/') {
+            navigate(ROUTES.range)
+          }
+        } else {
+          setUser(null)
+        }
+      })
+      .catch(() => {
+        setUser(null)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [])
+
+  if (loading) {
+    return <div className="loading-screen">Loading range...</div>
+  }
 
   if (path !== ROUTES.range && path !== ROUTES.profile) {
     return <LoginPage />
@@ -50,7 +85,11 @@ function App() {
     <SettingsProvider>
       <AppShell user={user} activePath={path}>
         {path === ROUTES.profile ? (
-          <ProfilePage user={user} onUpdateProfile={(changes) => setUser(saveProfile(changes))} />
+          <ProfilePage 
+            user={user} 
+            onUpdateProfile={(changes) => setUser({ ...user, ...changes })} 
+            onLogout={handleLogout}
+          />
         ) : (
           <MainPage user={user} />
         )}

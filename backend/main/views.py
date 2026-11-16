@@ -1,4 +1,3 @@
-# </Josiah 11/8/26
 from authlib.integrations.django_client import OAuth
 from django.conf import settings
 from django.contrib.auth import get_user_model, login, logout
@@ -44,7 +43,7 @@ def callback(request):
     user, _ = User.objects.get_or_create(
         username=f"oidc:{claims['sub']}", defaults={"email": claims.get("email", "")})
     login(request, user)                                      # rotates the session key
-    return redirect("home")
+    return redirect("http://localhost:5173/#/range")
 
 # def callback(request, provider):
 #     client = oauth.create_client(provider)
@@ -65,9 +64,21 @@ def callback(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("/")
+    return redirect("http://localhost:5173/#/")
 
 @login_required
 def home(request):
     return JsonResponse({"user": request.user.username, "email": request.user.email})
-# /Josiah 11/8/26>
+
+def me_view(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"authenticated": False}, status=200)
+    
+    return JsonResponse({
+        "authenticated": True,
+        "username": request.user.username,
+        "email": request.user.email,
+        "displayName": request.user.first_name or request.user.username,
+        "role": "Student",
+        "joined": request.user.date_joined.strftime("%Y-%m-%d"),
+    })
