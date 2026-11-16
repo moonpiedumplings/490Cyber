@@ -1,0 +1,21 @@
+.page-intro {
+  margin-bottom: 24px;
+}
+
+.page-intro .brand-accent {
+  margin: 0 0 14px;
+}
+
+.page-intro h1 {
+  margin: 0 0 6px;
+  color: var(--cr-text);
+  font-family: inherit;
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+}
+
+.page-intro p {
+  margin: 0;
+  color: var(--cr-muted);
+}

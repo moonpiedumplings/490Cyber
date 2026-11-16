@@ -1,6 +1,13 @@
+import { useState } from 'react'
 import './App.css'
+import AppShell from './components/AppShell'
+import { getCurrentUser, saveProfile } from './lib/currentUser'
+import { ROUTES, useHashRoute } from './lib/router'
+import SettingsProvider from './lib/SettingsProvider'
+import MainPage from './pages/MainPage'
+import ProfilePage from './pages/ProfilePage'
 
-function App() {
+function LoginPage() {
   const handleLogin = () => {
     // Navigate the browser to Django's login route
     window.location.href = 'http://localhost:8000/login/'
@@ -24,6 +31,31 @@ function App() {
         </button>
       </section>
     </main>
+  )
+}
+
+// Routes (hash-based for now):
+//   #/         login
+//   #/range    main page (terraform editor, settings + profile buttons)
+//   #/profile  profile page
+function App() {
+  const path = useHashRoute()
+  const [user, setUser] = useState(getCurrentUser)
+
+  if (path !== ROUTES.range && path !== ROUTES.profile) {
+    return <LoginPage />
+  }
+
+  return (
+    <SettingsProvider>
+      <AppShell user={user} activePath={path}>
+        {path === ROUTES.profile ? (
+          <ProfilePage user={user} onUpdateProfile={(changes) => setUser(saveProfile(changes))} />
+        ) : (
+          <MainPage user={user} />
+        )}
+      </AppShell>
+    </SettingsProvider>
   )
 }
 
