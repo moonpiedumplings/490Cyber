@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import AppShell from './components/AppShell'
+import MatrixRain from './components/MatrixRain'
 import { getCurrentUser, saveProfile } from './lib/currentUser'
 import { ROUTES, useHashRoute } from './lib/router'
 import SettingsProvider from './lib/SettingsProvider'
@@ -15,6 +16,8 @@ function LoginPage() {
 
   return (
     <main className="login-page">
+      <MatrixRain />
+
       <section className="login-content" aria-labelledby="login-title">
         <div className="brand-accent" aria-hidden="true"></div>
 
@@ -36,7 +39,7 @@ function LoginPage() {
 
 // Routes (hash-based for now):
 //   #/         login
-//   #/range    main page (terraform editor, settings + profile buttons)
+//   #/range    main dashboard
 //   #/profile  profile page
 function App() {
   const path = useHashRoute()
@@ -50,7 +53,10 @@ function App() {
     <SettingsProvider>
       <AppShell user={user} activePath={path}>
         {path === ROUTES.profile ? (
-          <ProfilePage user={user} onUpdateProfile={(changes) => setUser(saveProfile(changes))} />
+          <ProfilePage
+            user={user}
+            onUpdateProfile={(changes) => setUser(saveProfile(changes))}
+          />
         ) : (
           <MainPage user={user} />
         )}
